@@ -95,7 +95,12 @@ bool NetworkManager::initializeClient(int port) {
     }
 
     if (connect(socket_, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
-        std::cerr << "Connection failed" << std::endl;
+        std::cerr << "Connection failed - Make sure the server is running first" << std::endl;
+        #ifdef __APPLE__
+            std::cerr << "Error: " << errno << " - " << strerror(errno) << std::endl;
+        #endif
+        closesocket(socket_);
+        socket_ = INVALID_SOCKET;
         return false;
     }
 

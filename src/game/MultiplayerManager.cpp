@@ -72,9 +72,36 @@ void MultiplayerManager::drawChat() {
 }
 
 void MultiplayerManager::drawConnectionStatus() {
-    const char* statusText = isConnected() ? "Connected" : "Waiting for connection...";
-    Color statusColor = isConnected() ? GREEN : RED;
+    const char* statusText;
+    const char* helpText;
+    Color statusColor;
+
+    if (isServer_) {
+        if (isConnected()) {
+            statusText = "Server: Client Connected";
+            helpText = "";
+            statusColor = GREEN;
+        } else {
+            statusText = "Server: Waiting for Client...";
+            helpText = "Start a client in another window to connect";
+            statusColor = YELLOW;
+        }
+    } else {
+        if (isConnected()) {
+            statusText = "Client: Connected to Server";
+            helpText = "";
+            statusColor = GREEN;
+        } else {
+            statusText = "Client: Cannot Connect to Server";
+            helpText = "Make sure to start the server first (use --server)";
+            statusColor = RED;
+        }
+    }
+
     DrawText(statusText, 10, 10, 20, statusColor);
+    if (strlen(helpText) > 0) {
+        DrawText(helpText, 10, 35, 16, GRAY);
+    }
 }
 
 void MultiplayerManager::draw() {
